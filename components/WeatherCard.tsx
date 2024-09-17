@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { WeatherData } from "../constants/types/weather";
 import { useTheme } from "../app/context/ThemeContext";
+import { useOrientation } from "../hooks/useOrientation";
 
 interface WeatherCardProps {
   weatherData: WeatherData;
@@ -18,6 +19,7 @@ const { width } = Dimensions.get("window");
 
 const WeatherCard: React.FC<WeatherCardProps> = ({ weatherData }) => {
   const { theme } = useTheme();
+  const orientation = useOrientation();
   const pan = useRef(new Animated.ValueXY()).current;
 
   const panResponder = PanResponder.create({
@@ -33,10 +35,14 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ weatherData }) => {
     },
   });
 
+  const cardStyle =
+    orientation === "LANDSCAPE" ? styles.cardLandscape : styles.cardPortrait;
+
   return (
     <Animated.View
       style={[
         styles.card,
+        cardStyle,
         { backgroundColor: theme.cardBackground },
         { transform: [{ translateX: pan.x }, { translateY: pan.y }] },
       ]}
@@ -74,6 +80,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     width: width - 40,
     alignItems: "center",
+  },
+  cardPortrait: {
+    width: Dimensions.get("window").width - 40,
+  },
+  cardLandscape: {
+    width: Dimensions.get("window").height - 40,
   },
   city: {
     fontSize: 24,

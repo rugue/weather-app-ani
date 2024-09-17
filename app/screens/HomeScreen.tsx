@@ -9,6 +9,8 @@ import {
   Alert,
   Dimensions,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -16,13 +18,15 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchWeatherData, setCity } from "../store/weatherSlice";
 import { useTheme } from "../../app/context/ThemeContext";
 import WeatherCard from "../../components/WeatherCard";
+import { useOrientation } from "../../hooks/useOrientation";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const HomeScreen: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { theme } = useTheme();
+  const orientation = useOrientation();
   const {
     data: weatherData,
     loading,
@@ -47,60 +51,80 @@ const HomeScreen: React.FC = () => {
     fetchWeather(inputCity);
   };
 
-  return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        { backgroundColor: theme.backgroundColor },
-      ]}
-    >
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[
-            styles.input,
-            { color: theme.textColor, borderColor: theme.textColor },
-          ]}
-          value={inputCity}
-          onChangeText={setInputCity}
-          placeholder="Enter city name"
-        />
-        <Button
-          title="Search"
-          onPress={handleSubmit}
-          disabled={loading}
-          color={theme.buttonColor}
-        />
-      </View>
+  const containerStyle = [
+    styles.container,
+    { backgroundColor: theme.backgroundColor },
+    orientation === "LANDSCAPE" && styles.landscapeContainer,
+  ];
 
-      {loading ? (
-        <ActivityIndicator size="large" color={theme.textColor} />
-      ) : error ? (
-        <Text style={[styles.error, { color: theme.errorColor }]}>
-          Error: {error}
-        </Text>
-      ) : weatherData ? (
-        <WeatherCard weatherData={weatherData} />
-      ) : (
-        <Text style={{ color: theme.textColor }}>
-          Enter a city name and press 'Search' to get weather data.
-        </Text>
-      )}
-    </ScrollView>
+  const inputContainerStyle = [
+    styles.inputContainer,
+    orientation === "LANDSCAPE" && styles.inputContainerLandscape,
+  ];
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={containerStyle}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={inputContainerStyle}>
+          <TextInput
+            style={[styles.input, { backgroundColor: theme.backgroundColor }]}
+            value={inputCity}
+            onChangeText={setInputCity}
+            placeholder="Enter city name"
+            placeholderTextColor={theme.textColor}
+          />
+          <Button title="Search" onPress={handleSubmit} />
+        </View>
+
+        {loading ? (
+          <ActivityIndicator size="large" color={theme.textColor} />
+        ) : error ? (
+          <Text style={[styles.error, { color: theme.errorColor }]}>
+            Error: {error}
+          </Text>
+        ) : weatherData ? (
+          <WeatherCard weatherData={weatherData} />
+        ) : (
+          <Text style={{ color: theme.textColor }}>
+            Enter a city name and press 'Search' to get weather data.
+          </Text>
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: 20,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    padding: 20,
+    width: "100%",
+  },
+  landscapeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   inputContainer: {
     flexDirection: "row",
     marginBottom: 20,
     width: "100%",
+  },
+  inputContainerLandscape: {
+    width: "45%",
+    marginRight: 20,
   },
   input: {
     flex: 1,
@@ -110,22 +134,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     paddingHorizontal: 10,
   },
-  city: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  temperature: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  description: {
-    fontSize: 24,
-    marginTop: 10,
-    marginBottom: 20,
-  },
   error: {
-    color: "red",
     fontSize: 18,
     textAlign: "center",
   },
