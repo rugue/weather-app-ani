@@ -12,10 +12,12 @@ import { useRouter } from "expo-router";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchWeatherData, setCity } from "../store/weatherSlice";
+import { useTheme } from "../../app/context/ThemeContext";
 
 const HomeScreen: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { theme } = useTheme();
   const {
     data: weatherData,
     loading,
@@ -41,28 +43,42 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.backgroundColor }]}
+    >
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: theme.textColor, borderColor: theme.textColor },
+          ]}
           value={inputCity}
           onChangeText={setInputCity}
           placeholder="Enter city name"
         />
-        <Button title="Search" onPress={handleSubmit} disabled={loading} />
+        <Button
+          title="Search"
+          onPress={handleSubmit}
+          disabled={loading}
+          color={theme.buttonColor}
+        />
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={theme.textColor} />
       ) : error ? (
-        <Text style={styles.error}>Error: {error}</Text>
+        <Text style={[styles.error, { color: theme.errorColor }]}>
+          Error: {error}
+        </Text>
       ) : weatherData ? (
         <>
-          <Text style={styles.city}>{weatherData.name}</Text>
-          <Text style={styles.temperature}>
+          <Text style={[styles.city, { color: theme.textColor }]}>
+            {weatherData.name}
+          </Text>
+          <Text style={[styles.temperature, { color: theme.textColor }]}>
             {Math.round(weatherData.main.temp)}°C
           </Text>
-          <Text style={styles.description}>
+          <Text style={[styles.description, { color: theme.textColor }]}>
             {weatherData.weather[0].description}
           </Text>
           <Button
@@ -73,10 +89,13 @@ const HomeScreen: React.FC = () => {
                 params: { weatherData: JSON.stringify(weatherData) },
               })
             }
+            color={theme.buttonColor}
           />
         </>
       ) : (
-        <Text>Enter a city name and press 'Search' to get weather data.</Text>
+        <Text style={{ color: theme.textColor }}>
+          Enter a city name and press 'Search' to get weather data.
+        </Text>
       )}
     </View>
   );
