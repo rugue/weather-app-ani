@@ -7,12 +7,17 @@ import {
   Button,
   TextInput,
   Alert,
+  Dimensions,
+  ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchWeatherData, setCity } from "../store/weatherSlice";
 import { useTheme } from "../../app/context/ThemeContext";
+import WeatherCard from "../../components/WeatherCard";
+
+const { width } = Dimensions.get("window");
 
 const HomeScreen: React.FC = () => {
   const router = useRouter();
@@ -43,8 +48,11 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.backgroundColor }]}
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: theme.backgroundColor },
+      ]}
     >
       <View style={styles.inputContainer}>
         <TextInput
@@ -71,33 +79,13 @@ const HomeScreen: React.FC = () => {
           Error: {error}
         </Text>
       ) : weatherData ? (
-        <>
-          <Text style={[styles.city, { color: theme.textColor }]}>
-            {weatherData.name}
-          </Text>
-          <Text style={[styles.temperature, { color: theme.textColor }]}>
-            {Math.round(weatherData.main.temp)}°C
-          </Text>
-          <Text style={[styles.description, { color: theme.textColor }]}>
-            {weatherData.weather[0].description}
-          </Text>
-          <Button
-            title="View Details"
-            onPress={() =>
-              router.push({
-                pathname: "/details",
-                params: { weatherData: JSON.stringify(weatherData) },
-              })
-            }
-            color={theme.buttonColor}
-          />
-        </>
+        <WeatherCard weatherData={weatherData} />
       ) : (
         <Text style={{ color: theme.textColor }}>
           Enter a city name and press 'Search' to get weather data.
         </Text>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
