@@ -10,7 +10,7 @@ The app retrieves weather data based on user location and displays it in a simpl
 Screenshot: [WeatherCard Screenshot](https://drive.google.com/file/d/1i-V93_lUmnvn6_8Fw0pDbfzNLkvId13j/view?usp=sharing)
 
 <!-- ![WeatherCard Screenshot](https://github.com/rugue/weather-app-ani/blob/master/Screenshot_1724254966.png?raw=true) -->
-<img src="https://github.com/rugue/weather-app-ani/blob/master/Screenshot_1724254966.png?raw=true" alt="WeatherCard Screenshot" width="200"/>
+<img src="https://github.com/rugue/weather-app-ani/blob/master/Screenshot_1724254966.png?raw=true" alt="WeatherCard Screenshot" width="300"/>
 
 Deployed App: [WeatherCard on Expo](https://expo.dev/@your_username/weathercard)
 
