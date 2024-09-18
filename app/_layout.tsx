@@ -9,7 +9,6 @@ export default function RootLayout() {
       <ThemeProvider>
         <Stack>
           <Stack.Screen name="index" options={{ title: "Weather App" }} />
-          <Stack.Screen name="details" options={{ title: "Weather Details" }} />
         </Stack>
       </ThemeProvider>
     </Provider>

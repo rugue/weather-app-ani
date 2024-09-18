@@ -15,7 +15,7 @@ interface WeatherCardProps {
   weatherData: WeatherData;
 }
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const WeatherCard: React.FC<WeatherCardProps> = ({ weatherData }) => {
   const { theme } = useTheme();
@@ -24,9 +24,11 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ weatherData }) => {
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-      useNativeDriver: false,
-    }),
+    onPanResponderMove: (_, gestureState) => {
+      Animated.event([null, { dx: pan.x, dy: pan.y }], {
+        useNativeDriver: false,
+      })(_, gestureState);
+    },
     onPanResponderRelease: () => {
       Animated.spring(pan, {
         toValue: { x: 0, y: 0 },
@@ -35,14 +37,13 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ weatherData }) => {
     },
   });
 
-  const cardStyle =
-    orientation === "LANDSCAPE" ? styles.cardLandscape : styles.cardPortrait;
+  const isLandscape = orientation === "LANDSCAPE";
 
   return (
     <Animated.View
       style={[
         styles.card,
-        cardStyle,
+        isLandscape ? styles.cardLandscape : styles.cardPortrait,
         { backgroundColor: theme.cardBackground },
         { transform: [{ translateX: pan.x }, { translateY: pan.y }] },
       ]}
@@ -78,14 +79,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    width: width - 40,
     alignItems: "center",
   },
   cardPortrait: {
-    width: Dimensions.get("window").width - 40,
+    width: width - 40,
   },
   cardLandscape: {
-    width: Dimensions.get("window").height - 40,
+    width: "100%",
+    maxWidth: height - 40,
   },
   city: {
     fontSize: 24,

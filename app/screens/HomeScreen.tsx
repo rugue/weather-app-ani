@@ -12,18 +12,16 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useRouter } from "expo-router";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchWeatherData, setCity } from "../store/weatherSlice";
-import { useTheme } from "../../app/context/ThemeContext";
+import { useTheme } from "../context/ThemeContext";
 import WeatherCard from "../../components/WeatherCard";
 import { useOrientation } from "../../hooks/useOrientation";
 
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen: React.FC = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { theme } = useTheme();
   const orientation = useOrientation();
@@ -51,50 +49,73 @@ const HomeScreen: React.FC = () => {
     fetchWeather(inputCity);
   };
 
-  const containerStyle = [
-    styles.container,
-    { backgroundColor: theme.backgroundColor },
-    orientation === "LANDSCAPE" && styles.landscapeContainer,
-  ];
-
-  const inputContainerStyle = [
-    styles.inputContainer,
-    orientation === "LANDSCAPE" && styles.inputContainerLandscape,
-  ];
+  const isLandscape = orientation === "LANDSCAPE";
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={containerStyle}
+      style={[styles.container, { backgroundColor: theme.backgroundColor }]}
     >
       <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
+        contentContainerStyle={[
+          styles.scrollViewContent,
+          isLandscape && styles.landscapeScrollViewContent,
+        ]}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={inputContainerStyle}>
-          <TextInput
-            style={[styles.input, { backgroundColor: theme.backgroundColor }]}
-            value={inputCity}
-            onChangeText={setInputCity}
-            placeholder="Enter city name"
-            placeholderTextColor={theme.textColor}
-          />
-          <Button title="Search" onPress={handleSubmit} />
-        </View>
+        <View
+          style={[
+            styles.contentContainer,
+            isLandscape && styles.landscapeContentContainer,
+          ]}
+        >
+          <View
+            style={[
+              styles.inputContainer,
+              isLandscape && styles.landscapeInputContainer,
+            ]}
+          >
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.backgroundColor,
+                  color: theme.textColor,
+                },
+              ]}
+              value={inputCity}
+              onChangeText={setInputCity}
+              placeholder="Enter city name"
+              placeholderTextColor={theme.textColor}
+            />
+            <Button
+              title="Search"
+              onPress={handleSubmit}
+              color={theme.buttonColor}
+            />
+          </View>
 
-        {loading ? (
-          <ActivityIndicator size="large" color={theme.textColor} />
-        ) : error ? (
-          <Text style={[styles.error, { color: theme.errorColor }]}>
-            Error: {error}
-          </Text>
-        ) : weatherData ? (
-          <WeatherCard weatherData={weatherData} />
-        ) : (
-          <Text style={{ color: theme.textColor }}>
-            Enter a city name and press 'Search' to get weather data.
-          </Text>
-        )}
+          <View
+            style={[
+              styles.weatherContainer,
+              isLandscape && styles.landscapeWeatherContainer,
+            ]}
+          >
+            {loading ? (
+              <ActivityIndicator size="large" color={theme.textColor} />
+            ) : error ? (
+              <Text style={[styles.error, { color: theme.errorColor }]}>
+                Error: {error}
+              </Text>
+            ) : weatherData ? (
+              <WeatherCard weatherData={weatherData} />
+            ) : (
+              <Text style={{ color: theme.textColor }}>
+                Enter a city name and press 'Search' to get weather data.
+              </Text>
+            )}
+          </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -103,28 +124,38 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    padding: 20,
   },
   scrollViewContent: {
     flexGrow: 1,
-    justifyContent: "center",
+  },
+  landscapeScrollViewContent: {
+    flexGrow: 1,
+    flexDirection: "row",
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "flex-start",
     alignItems: "center",
+    padding: 20,
     width: "100%",
   },
-  landscapeContainer: {
+  landscapeContentContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
+    alignItems: "flex-start",
+    width: "100%",
   },
   inputContainer: {
     flexDirection: "row",
-    marginBottom: 20,
     width: "100%",
   },
-  inputContainerLandscape: {
+  landscapeInputContainer: {
     width: "45%",
-    marginRight: 20,
+  },
+  landscapeWeatherContainer: {
+    width: "55%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   input: {
     flex: 1,
@@ -134,9 +165,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     paddingHorizontal: 10,
   },
+  weatherContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
   error: {
     fontSize: 18,
     textAlign: "center",
+    marginTop: 20,
   },
 });
 
