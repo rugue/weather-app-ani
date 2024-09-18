@@ -1,7 +1,7 @@
-````markdown
 # WeatherCard
 
-A React Native TypeScript application built using Expo, providing users with real-time weather information in a clean and intuitive card interface. The app retrieves weather data based on user location and displays it in a simple yet detailed format.
+A React Native TypeScript application built using Expo, providing users with real-time weather information in a clean and intuitive card interface. This project is part of my **portfolio** for the **ALX Software Engineering Program, Cohort 22**.
+The app retrieves weather data based on user location and displays it in a simple yet detailed format.
 
 ## 🌟 Introduction
 
@@ -26,7 +26,6 @@ To install and run this project locally, follow these steps:
 ```bash
 git clone https://github.com/rugue/weather-app-ani.git
 ```
-````
 
 2. Navigate into the project directory:
 
@@ -95,7 +94,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Thank you for checking out **WeatherCard**! Feel free to reach out if you have any questions or suggestions!
 
-```
+``
 
 ### Breakdown of Sections:
 
@@ -106,6 +105,3 @@ Thank you for checking out **WeatherCard**! Feel free to reach out if you have a
 5. **Contributing**: Explanation on how to contribute to the project.
 6. **Related Projects**: Similar weather-related projects that the user might find interesting.
 7. **Licensing**: The project is under the MIT license.
-
-Let me know if you'd like any more details or adjustments to the file!
-```
