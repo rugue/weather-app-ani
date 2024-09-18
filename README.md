@@ -8,6 +8,7 @@ The app retrieves weather data based on user location and displays it in a simpl
 **WeatherCard** is designed to be a lightweight and user-friendly weather application that provides users with up-to-date weather conditions such as temperature, humidity, wind speed, and more. By utilizing the Expo framework and TypeScript, the app is easy to maintain, expand, and customize.
 
 Screenshot: [WeatherCard Screenshot](https://drive.google.com/file/d/1i-V93_lUmnvn6_8Fw0pDbfzNLkvId13j/view?usp=sharing)
+![WeatherCard Screenshot](https://github.com/rugue/weather-app-ani/blob/master/Screenshot_1724254966.png?raw=true)
 
 Deployed App: [WeatherCard on Expo](https://expo.dev/@your_username/weathercard)
 
